@@ -25,9 +25,9 @@
 <html>
 <head>
   <title>Image Upload</title>
-  <link rel="stylesheet" type="text/css" href="style.css">>
+  <link rel="stylesheet" type="text/css" href="stylez.css">>
 </head>
-<body>
+<body class="background">
 <div id="content">
   <?php
     $db = mysqli_connect("localhost", "root", "root", "image_upload");

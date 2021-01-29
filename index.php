@@ -1,59 +1,57 @@
 <?php
-  $db = mysqli_connect("localhost", "root", "root", "image_upload");
-
   $msg = "";
 
   if (isset($_POST['upload'])) {
+
+    $target = "images/".basename($_FILES['image']['name']);
+
+    $db = mysqli_connect("localhost", "root", "root", "image_upload");
+
+    // Get image name
     $image = $_FILES['image']['name'];
-    $image_text = mysqli_real_escape_string($db, $_POST['image_text']);
+    $text = $_POST['text'];
 
-    $target = "images/".basename($image);
-
-    $sql = "INSERT INTO images (image, image_text) VALUES ('$image', '$image_text')";
-
+    $sql = "INSERT INTO images (image, text) VALUES ('$image', '$text')";
     mysqli_query($db, $sql);
 
     if (move_uploaded_file($_FILES['image']['tmp_name'], $target)) {
-      $msg = "Uploaded successfully";
-    } else {
-      $msg = "Failed to upload";
+      $msg = "Image uploaded successfully";
+    }else{
+      $msg = "Failed to upload image";
     }
   }
-  $result = mysqli_query($db, "SELECT * FROM images");
 ?>
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Upload new image</title>
-  <link rel="stylesheet" type="text/css" href="stylez.css">
+  <title>Image Upload</title>
+  <link rel="stylesheet" type="text/css" href="style.css">>
 </head>
-<body class="background">
-  <div id="content">
-    <?php
-      while ($row = mysqli_fetch_array($result)) {
-        echo "<div id='img_div'>";
-          echo "<img src='images/".$row['image']."' >";
-          echo "<p>".$row['image_text']."</p>";
-        echo "</div>";
-      }
-    ?>
-    <form method="POST" action="index.php" enctype="multipart/form-data">
-      <input type="hidden" name="size" value="1000000">
-      <div>
-        <input type="file" name="image">
-      </div>
-      <div>
-        <textarea 
-          id="text" 
-          cols="40" 
-          rows="4" 
-          name="image_text" 
-          placeholder="Say a few words :)"></textarea>
-      </div>
-      <div>
-        <button type="submit" name="upload">Upload</button>
-      </div>
-    </form>
-  </div>
+<body>
+<div id="content">
+  <?php
+    $db = mysqli_connect("localhost", "root", "root", "image_upload");
+    $sql = "SELECT * FROM images";
+    $result = mysqli_query($db, $sql);
+    while ($row = mysqli_fetch_array($result)) {
+      echo "<div id='img_div'>";
+        echo "<img src='images/".$row['image']."' >";
+        echo "<p>".$row['text']."</p>";
+      echo "</div>";
+    }
+  ?>
+  <form method="POST" action="index.php" enctype="multipart/form-data">
+    <input type="hidden" name="size" value="1000000">
+    <div>
+      <input type="file" name="image">
+    </div>
+    <div>
+      <textarea name="text" cols="40" rows="4" placeholder="Say something about this image..."></textarea>
+    </div>
+    <div>
+      <input type="submit" name="upload" value="Upload Image">
+    </div>
+  </form>
+</div>
 </body>
 </html>
